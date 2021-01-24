@@ -132,14 +132,6 @@ var GetTokenHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 
-	claims["admin"] = true
-	claims["name"] = "Ado Kukic"
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	tokenString, err := token.SignedString(mySigningKey)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	t := time.Now()
 	login := r.FormValue("login")
 	password := r.FormValue("password")
@@ -151,6 +143,18 @@ var GetTokenHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 
 	autorizationok := Log == login && Pass == password
 	fmt.Println("autorizationok = ", autorizationok)
+
+	claims["admin permissions?"] = "maybe"
+	claims["login"] = &Log
+	claims["password"] = &Pass
+	claims["Data answer is"] = dataanswer
+	claims["Token request at"] = t
+	claims["ATTENTION!"] = "Привет, Макс :)"
+	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	tokenString, err := token.SignedString(mySigningKey)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	tokenFprint := []byte(tokenString)
 
